@@ -10,14 +10,18 @@
 
 #include <memory>
 
+inline static constexpr auto MAXVIEWDATA = 1024;
+inline static constexpr auto MAXMODECOUNT = 24;
+inline static constexpr auto MAXKEYCOUNT = 128;
+inline static constexpr auto MAXFACECOUNT = 64;
 
-#define MAXVIEWDATA 1024
-
-#define MAXMODECOUNT 24
-
-#define MAXKEYCOUNT 128
-
-#define MAXFACECOUNT 64
+//#define MAXVIEWDATA 1024
+//
+//#define MAXMODECOUNT 24
+//
+//#define MAXKEYCOUNT 128
+//
+//#define MAXFACECOUNT 64
 
 class Model;
 class Sprite;
