@@ -97,6 +97,7 @@ target_link_libraries(${PROJECT_NAME}
 
 # Specify include directories.
 target_include_directories(${PROJECT_NAME} PRIVATE ${STB_PATH})
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "plugins/${PROJECT_NAME}")
 install_obs_plugin_with_data(${PROJECT_NAME} data)

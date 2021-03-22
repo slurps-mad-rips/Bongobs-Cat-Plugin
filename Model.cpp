@@ -40,20 +40,20 @@ namespace {
 }
 
 Model::Model()
-	: CubismUserModel(),
-	  _modelSetting(NULL),
-	  _userTimeSeconds(0.0f),
-	  randomMotion(true),
-	  delayTime(5.0f),
-	  isBreath(true),
-	  isEyeBlink(true),
-	  s_currentFrame(0.0f),
-	  s_lastFrame(0.0f),
-	  s_deltaTime(0.0f),
-	  rButton(false),
-	  lButton(false),
-	  isMouseHorizontalFlip(true),
-	  IsMouseVerticalFlip(true)
+  : CubismUserModel(),
+    _modelSetting(NULL),
+    _userTimeSeconds(0.0f),
+    randomMotion(true),
+    delayTime(5.0f),
+    isBreath(true),
+    isEyeBlink(true),
+    s_currentFrame(0.0f),
+    s_lastFrame(0.0f),
+    s_deltaTime(0.0f),
+    rButton(false),
+    lButton(false),
+    isMouseHorizontalFlip(true),
+    IsMouseVerticalFlip(true)
 
 {
     _idParamAngleX = CubismFramework::GetIdManager()->GetId(ParamAngleX);
@@ -92,17 +92,17 @@ csmBool Model::LoadAssets(const csmChar* dir, const csmChar* fileName)
 
     csmByte* buffer = CreateBuffer(path.GetRawString(), &size);
     if (size == 0) {
-	DeleteBuffer(buffer, path.GetRawString());
-	return false;
+  DeleteBuffer(buffer, path.GetRawString());
+  return false;
     }
-	    
+      
     ICubismModelSetting* setting = new CubismModelSettingJson(buffer, size);
     DeleteBuffer(buffer, path.GetRawString());
 
     if (!SetupModel(setting)) {
-	    return false;
+      return false;
     }
-	    
+      
 
     CreateRenderer();
 
@@ -127,19 +127,19 @@ Csm::csmBool Model::SetupModel(ICubismModelSetting *setting)
     {
         csmString path = _modelSetting->GetModelFileName();
         path = _modelHomeDir + path;
-	if(!Pal::IsFileExist(path.GetRawString()))
-		return false;
+  if(!Pal::IsFileExist(path.GetRawString()))
+    return false;
 
         buffer = CreateBuffer(path.GetRawString(), &size);
-	if (size != 0) {
-		LoadModel(buffer, size);
-		DeleteBuffer(buffer, path.GetRawString());
-	} else {
-		DeleteBuffer(buffer, path.GetRawString());
-		return false;
-	}	
+  if (size != 0) {
+    LoadModel(buffer, size);
+    DeleteBuffer(buffer, path.GetRawString());
+  } else {
+    DeleteBuffer(buffer, path.GetRawString());
+    return false;
+  } 
     } else
-	    return false;
+      return false;
 
     //Expression
     if (_modelSetting->GetExpressionCount() > 0)
@@ -152,18 +152,18 @@ Csm::csmBool Model::SetupModel(ICubismModelSetting *setting)
             path = _modelHomeDir + path;
 
             buffer = CreateBuffer(path.GetRawString(), &size);
-	    if (size != 0) {
-		    ACubismMotion* motion = LoadExpression(buffer, size, name.GetRawString());
+      if (size != 0) {
+        ACubismMotion* motion = LoadExpression(buffer, size, name.GetRawString());
 
-		    if (_expressions[name] != NULL)
-		    {
-			ACubismMotion::Delete(_expressions[name]);
-			_expressions[name] = NULL;
-		    }
-		    _expressions[name] = motion;
+        if (_expressions[name] != NULL)
+        {
+      ACubismMotion::Delete(_expressions[name]);
+      _expressions[name] = NULL;
+        }
+        _expressions[name] = motion;
 
-		    DeleteBuffer(buffer, path.GetRawString());
-	    }           
+        DeleteBuffer(buffer, path.GetRawString());
+      }           
         }
     }
 
@@ -172,13 +172,13 @@ Csm::csmBool Model::SetupModel(ICubismModelSetting *setting)
     {
         csmString path = _modelSetting->GetPhysicsFileName();
         path = _modelHomeDir + path;
-	if (!Pal::IsFileExist(path.GetRawString()))
-		return false;
+  if (!Pal::IsFileExist(path.GetRawString()))
+    return false;
         buffer = CreateBuffer(path.GetRawString(), &size);
-	if (size != 0) {
-		LoadPhysics(buffer, size);
-		DeleteBuffer(buffer, path.GetRawString());
-	}
+  if (size != 0) {
+    LoadPhysics(buffer, size);
+    DeleteBuffer(buffer, path.GetRawString());
+  }
     }
 
     //Pose
@@ -186,13 +186,13 @@ Csm::csmBool Model::SetupModel(ICubismModelSetting *setting)
     {
         csmString path = _modelSetting->GetPoseFileName();
         path = _modelHomeDir + path;
-	if (!Pal::IsFileExist(path.GetRawString()))
-		return false;
+  if (!Pal::IsFileExist(path.GetRawString()))
+    return false;
         buffer = CreateBuffer(path.GetRawString(), &size);
-	if (size != 0) {
-		LoadPose(buffer, size);
-		DeleteBuffer(buffer, path.GetRawString());
-	}
+  if (size != 0) {
+    LoadPose(buffer, size);
+    DeleteBuffer(buffer, path.GetRawString());
+  }
     }
 
     //EyeBlink
@@ -221,13 +221,13 @@ Csm::csmBool Model::SetupModel(ICubismModelSetting *setting)
     {
         csmString path = _modelSetting->GetUserDataFile();
         path = _modelHomeDir + path;
-	if(!Pal::IsFileExist(path.GetRawString()))
-		return false;
+  if(!Pal::IsFileExist(path.GetRawString()))
+    return false;
         buffer = CreateBuffer(path.GetRawString(), &size);
-	if (size != 0) {
-		LoadUserData(buffer, size);
-		DeleteBuffer(buffer, path.GetRawString());
-	}     
+  if (size != 0) {
+    LoadUserData(buffer, size);
+    DeleteBuffer(buffer, path.GetRawString());
+  }     
     }
 
     // EyeBlinkIds
@@ -277,7 +277,7 @@ csmBool Model::PreloadMotionGroup(const csmChar* group)
     for (csmInt32 i = 0; i < count; i++)
     {
         //ex) idle_0
-	csmString name = _modelSetting->GetMotionFileName(group,i); //Utils::CubismString::GetFormatedString("%s_%d", group, i);
+  csmString name = _modelSetting->GetMotionFileName(group,i); //Utils::CubismString::GetFormatedString("%s_%d", group, i);
         csmString path = _modelSetting->GetMotionFileName(group, i);
         path = _modelHomeDir + path;
 
@@ -289,11 +289,11 @@ csmBool Model::PreloadMotionGroup(const csmChar* group)
         csmByte* buffer;
         csmSizeInt size;
         buffer = CreateBuffer(path.GetRawString(), &size);
-	if (size == 0) {
-		DeleteBuffer(buffer, path.GetRawString());
-		return false;
-	}
-		
+  if (size == 0) {
+    DeleteBuffer(buffer, path.GetRawString());
+    return false;
+  }
+    
 
         CubismMotion* tmpMotion = static_cast<CubismMotion*>(LoadMotion(buffer, size, name.GetRawString()));
         csmFloat32 fadeTime = _modelSetting->GetMotionFadeInTimeValue(group, i);
@@ -376,12 +376,12 @@ void Model::Update(Csm::csmUint16 _id)
     //-----------------------------------------------------------------
     _model->LoadParameters(); // 前回セーブされた状態をロード
     if (_motionManager->IsFinished()) {
-	    // モーションの再生がない場合、待機モーションの中からランダムで再生する
-	    if(randomMotion)
-		    StartRandomMotion(PriorityIdle);	 
+      // モーションの再生がない場合、待機モーションの中からランダムで再生する
+      if(randomMotion)
+        StartRandomMotion(PriorityIdle);   
     } else {
-	    motionUpdated = _motionManager->UpdateMotion(
-		    _model, deltaTimeSeconds); // モーションを更新
+      motionUpdated = _motionManager->UpdateMotion(
+        _model, deltaTimeSeconds); // モーションを更新
     }
     _model->SaveParameters(); // 状態を保存
     //-----------------------------------------------------------------
@@ -404,33 +404,33 @@ void Model::Update(Csm::csmUint16 _id)
 
 
     if (isTrack) {
-	    _model->AddParameterValue(_idParamAngleX,(1-mouseX) * 30); // -30から30の値を加える
-	    _model->AddParameterValue(_idParamAngleY, (1-mouseY) * 30);
-	    _model->AddParameterValue(_idParamAngleZ,(1 - mouseX) * (1 - mouseY) * -30);
+      _model->AddParameterValue(_idParamAngleX,(1-mouseX) * 30); // -30から30の値を加える
+      _model->AddParameterValue(_idParamAngleY, (1-mouseY) * 30);
+      _model->AddParameterValue(_idParamAngleZ,(1 - mouseX) * (1 - mouseY) * -30);
     
-	    _model->AddParameterValue(_idParamEyeBallX,(1 - mouseX) * 30); ///< パラメータID: ParamEyeBallX
-	    _model->AddParameterValue(_idParamEyeBallY, (1 - mouseY) * 30); ///< パラメータID: ParamEyeBallXY	   
+      _model->AddParameterValue(_idParamEyeBallX,(1 - mouseX) * 30); ///< パラメータID: ParamEyeBallX
+      _model->AddParameterValue(_idParamEyeBallY, (1 - mouseY) * 30); ///< パラメータID: ParamEyeBallXY    
     }
 
     if (isMouseHorizontalFlip)
-	  _model->AddParameterValue(_idParamMouseX, mouseX * 60 - 30);
+    _model->AddParameterValue(_idParamMouseX, mouseX * 60 - 30);
     else 
-	  _model->AddParameterValue(_idParamMouseX, (1-mouseX) * 60 - 30);
+    _model->AddParameterValue(_idParamMouseX, (1-mouseX) * 60 - 30);
 
     if (IsMouseVerticalFlip)
-	_model->AddParameterValue(_idParamMouseY, (1 - mouseY) * 60 - 30);
+  _model->AddParameterValue(_idParamMouseY, (1 - mouseY) * 60 - 30);
     else 
-	_model->AddParameterValue(_idParamMouseY, mouseY * 60 - 30);
+  _model->AddParameterValue(_idParamMouseY, mouseY * 60 - 30);
 
     if (rButton)
-	    _model->AddParameterValue(_idParamRightButton, 1);
+      _model->AddParameterValue(_idParamRightButton, 1);
     else
-	    _model->AddParameterValue(_idParamRightButton, 0);
+      _model->AddParameterValue(_idParamRightButton, 0);
 
     if (lButton)
-	    _model->AddParameterValue(_idParamLeftButton, 1);
+      _model->AddParameterValue(_idParamLeftButton, 1);
     else
-	    _model->AddParameterValue(_idParamLeftButton, 0);
+      _model->AddParameterValue(_idParamLeftButton, 0);
 
     // 呼吸など
     if (_breath != NULL&&isBreath)
@@ -487,50 +487,38 @@ CubismMotionQueueEntryHandle Model::StartMotion(const csmChar* group, csmInt32 n
     CubismMotion* motion = static_cast<CubismMotion*>(_motions[name.GetRawString()]);
     csmBool autoDelete = false;
 
-    if (motion == NULL)
-    {
-        csmString path = fileName;
-        path = _modelHomeDir + path;
+    if (not motion) {
+      csmString path = fileName;
+      path = _modelHomeDir + path;
 
-        csmByte* buffer;
-        csmSizeInt size;
-        buffer = CreateBuffer(path.GetRawString(), &size);
-	if (size == 0)
-		goto end;
-	motion = static_cast<CubismMotion*>(LoadMotion(buffer, size, NULL, onFinishedMotionHandler));
+      csmSizeInt size { };
+      // I checked and this just ends up calling new[],
+      // DeleteBuffer calls delete[] and nothing else
+      std::unique_ptr<csmByte[]> buffer { CreateBuffer(path.GetRawString(), &size) };
+      if (size) {
+        motion = static_cast<CubismMotion*>(LoadMotion(buffer.get(), size, NULL, onFinishedMotionHandler));
         csmFloat32 fadeTime = _modelSetting->GetMotionFadeInTimeValue(group, no);
-        if (fadeTime >= 0.0f)
-        {
-            motion->SetFadeInTime(fadeTime);
-	} else {
-		motion->SetFadeInTime(1.0f);
-	}
+        if (fadeTime < 0.0f) { fadeTime = 1.0f; }
+        motion->SetFadeInTime(fadeTime);
 
         fadeTime = _modelSetting->GetMotionFadeOutTimeValue(group, no);
-        if (fadeTime >= 0.0f)
-        {
-            motion->SetFadeOutTime(fadeTime);
-	} else {
-		motion->SetFadeOutTime(1.0f);
-	}
+        if (fadeTime < 0.0f) { fadeTime = 1.0f; }
+        motion->SetFadeOutTime(fadeTime);
 
-	//motion->IsLoop(true);
+        //motion->IsLoop(true);
         motion->SetEffectIds(_eyeBlinkIds, _lipSyncIds);
+        // comment below translates to "is it memory at the end" according to google.
         autoDelete = true; // 終了時にメモリから削除
-end:
-        DeleteBuffer(buffer, path.GetRawString());
-    }
-    else
-    {
-        motion->SetFinishedMotionHandler(onFinishedMotionHandler);
+      }
+    } else {
+      motion->SetFinishedMotionHandler(onFinishedMotionHandler);
     }
 
     //voice
     csmString voice = _modelSetting->GetMotionSoundFileName(group, no);
-    if (strcmp(voice.GetRawString(), "") != 0)
-    {
-        csmString path = voice;
-        path = _modelHomeDir + path;
+    if (not std::strlen(voice.GetRawString())) {
+      csmString path = voice;
+      path = _modelHomeDir + path;
     }
 
     if (_debugMode)
@@ -542,21 +530,21 @@ end:
 
 CubismMotionQueueEntryHandle Model::StartRandomMotion(csmInt32 priority, ACubismMotion::FinishedMotionCallback onFinishedMotionHandler)
 {
-	csmInt32 nog;
-	if (_modelSetting->GetMotionGroupCount() == 0) {
-		return InvalidMotionQueueEntryHandleValue;
-	}
-	nog = rand() % _modelSetting->GetMotionGroupCount();
-	const csmChar *group = _modelSetting->GetMotionGroupName(nog);
+  csmInt32 nog;
+  if (_modelSetting->GetMotionGroupCount() == 0) {
+    return InvalidMotionQueueEntryHandleValue;
+  }
+  nog = rand() % _modelSetting->GetMotionGroupCount();
+  const csmChar *group = _modelSetting->GetMotionGroupName(nog);
 
-	csmInt32 no;
-	if (_modelSetting->GetMotionCount(group) == 0)
-	{
-		return InvalidMotionQueueEntryHandleValue;
-	}
-	no = rand() % _modelSetting->GetMotionCount(group);
+  csmInt32 no;
+  if (_modelSetting->GetMotionCount(group) == 0)
+  {
+    return InvalidMotionQueueEntryHandleValue;
+  }
+  no = rand() % _modelSetting->GetMotionCount(group);
 
-	return StartMotion(group, no, priority, onFinishedMotionHandler);
+  return StartMotion(group, no, priority, onFinishedMotionHandler);
 }
 
 void Model::DoDraw()
@@ -672,40 +660,40 @@ Csm::Rendering::CubismOffscreenFrame_OpenGLES2& Model::GetRenderBuffer()
 }
 
 void Model::UpdataSetting(Csm::csmBool _randomMotion,
-			      Csm::csmFloat32 _delayTime,
-			      Csm::csmBool _isBreath,
-			      Csm::csmBool _isEyeBlink,
-			      Csm::csmBool _isTrack,
-			      Csm::csmBool _isMouseHorizontalFlip,
-			      Csm::csmBool _IsMouseVerticalFlip)
+            Csm::csmFloat32 _delayTime,
+            Csm::csmBool _isBreath,
+            Csm::csmBool _isEyeBlink,
+            Csm::csmBool _isTrack,
+            Csm::csmBool _isMouseHorizontalFlip,
+            Csm::csmBool _IsMouseVerticalFlip)
 {
-	randomMotion = _randomMotion;
-	delayTime = _delayTime;
-	isBreath = _isBreath;
-	isEyeBlink = _isEyeBlink;
-	isTrack = _isTrack;
-	isMouseHorizontalFlip =_isMouseHorizontalFlip;
-	IsMouseVerticalFlip = _IsMouseVerticalFlip;
+  randomMotion = _randomMotion;
+  delayTime = _delayTime;
+  isBreath = _isBreath;
+  isEyeBlink = _isEyeBlink;
+  isTrack = _isTrack;
+  isMouseHorizontalFlip =_isMouseHorizontalFlip;
+  IsMouseVerticalFlip = _IsMouseVerticalFlip;
 }
 
 void Model::UpdateMouseState(Csm::csmFloat32 _mouseX, Csm::csmFloat32 _mouseY,
-			     Csm::csmBool _lButton, Csm::csmBool _rButton)
+           Csm::csmBool _lButton, Csm::csmBool _rButton)
 {
-	mouseX = _mouseX;
-	mouseY = _mouseY;
-	lButton = _lButton;
-	rButton = _rButton;
+  mouseX = _mouseX;
+  mouseY = _mouseY;
+  lButton = _lButton;
+  rButton = _rButton;
 }
 
 csmFloat32 Model::GetDeltaTime()
 {
-	return static_cast<csmFloat32>(s_deltaTime);
+  return static_cast<csmFloat32>(s_deltaTime);
 }
 
 void Model::UpdateTime() {
-		s_currentFrame = glfwGetTime();
-		s_deltaTime = s_currentFrame - s_lastFrame;
-		s_lastFrame = s_currentFrame;
+    s_currentFrame = glfwGetTime();
+    s_deltaTime = s_currentFrame - s_lastFrame;
+    s_lastFrame = s_currentFrame;
 }
 
 

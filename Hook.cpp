@@ -28,7 +28,7 @@ static HHOOK hhkLowLevelMs;
  * A better way to tackle this would be to use scan codes, where scan code Q is
  * "the key next to tab on
  */
-enum class Key {
+enum class Key : DWORD {
   A = 0x41,
 };
 
@@ -47,10 +47,7 @@ static std::optional<int> HookCode(DWORD code) {
   // Char keys for ASCI
   // No VM Def in header
 
-  case Key::A:
-    return 0;
-    key = 0;//a
-    break;
+  case static_cast<DWORD>(Key::A): return 0;
   case 0x42:
     key = 1; 
     break;
@@ -344,12 +341,12 @@ void Hook::Run() {
   hhkLowLevelMs =SetWindowsHookEx(WH_MOUSE_LL, Hook::MouseHookProc, 0, 0);
 
 
-  HINSTANCE hInst;
-  hInst = GetModuleHandle(NULL); 
-  WNDCLASSEX wcx;
-  wcx.cbSize = sizeof(wcx);
+  auto hInst = GetModuleHandle(nullptr);
+  WNDCLASSEX wcx {
+    .cbSize = sizeof(wcx)
+  };
   wcx.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC |
-        CS_NOCLOSE;       
+        CS_NOCLOSE;
   wcx.lpfnWndProc = WindowProc; 
   wcx.cbClsExtra = 0;           
   wcx.cbWndExtra = 0;           
@@ -376,14 +373,14 @@ void Hook::Run() {
     wcx.lpszClassName,
     NULL,
     WS_VISIBLE | WS_POPUP, 
-    OSDleft,               
-    OSDTop,                
-    300,                   
-    300,                  
-    (HWND)NULL, 
-    (HMENU)NULL,   
-    hInst,        
-    (LPVOID)NULL);
+    OSDleft,
+    OSDTop,
+    300,
+    300,
+    nullptr,
+    nullptr,
+    hInst,
+    nullptr);
 
   if (!m_hWnd) {
     //fail to creat window;
