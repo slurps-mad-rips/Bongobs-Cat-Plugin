@@ -26,13 +26,9 @@ EventManager::EventManager()
     ,_leftButton(false)
     ,_rightButton(false)
 {
-	for (int i = 0; i < KEYAMOUT; i++)
-		_keyEvent[i].KeyBoardSignal = false;
-	
-}
-
-EventManager::~EventManager() {
-
+  for (int i = 0; i < KEYAMOUT; i++)
+    _keyEvent[i].KeyBoardSignal = false;
+  
 }
 
 void EventManager::MouseEventBegan(float deviceX, float deviceY)
@@ -50,7 +46,7 @@ void EventManager::MouseEventMoved(float deviceX, float deviceY)
 }
 
 void EventManager::MouseEventMoved(float deviceX1, float deviceY1,
-				   float deviceX2, float deviceY2)
+           float deviceX2, float deviceY2)
 {
     float distance = CalculateDistance(deviceX1, deviceY1, deviceX2, deviceY2);
     float centerX = (deviceX1 + deviceX2) * 0.5f;
@@ -66,73 +62,62 @@ void EventManager::MouseEventMoved(float deviceX1, float deviceY1,
 }
 
 void EventManager::MouseEventMoved(int width, int height, float deviceX,
-				   float deviceY)
+           float deviceY)
 {
-	if (deviceX - _startX > 0) {
-		if (deviceX - _startX > width / 2) {
-			_startX += deviceX - _startX - width / 2;	
-		} 
-		_lastX = deviceX;
-	} else {
-		if (abs(deviceX - _startX) > width / 2) {
-			_startX -= abs(deviceX - _startX) - width / 2;
-		}	
-		_lastX = deviceX;
-	}
+  if (deviceX - _startX > 0) {
+    if (deviceX - _startX > width / 2) {
+      _startX += deviceX - _startX - width / 2; 
+    } 
+    _lastX = deviceX;
+  } else {
+    if (abs(deviceX - _startX) > width / 2) {
+      _startX -= abs(deviceX - _startX) - width / 2;
+    } 
+    _lastX = deviceX;
+  }
 
-	if (deviceY - _startY > 0) {
-		if (deviceY - _startY > height / 2) {
-			_startY += deviceY - _startY - height / 2;
-		}
-		_lastY = deviceY;
-	} else {
-		if (abs(deviceY - _startY) > height / 2) {
-			_startY -= abs(deviceY - _startY) - height / 2;
-		}
-		_lastY = deviceY;
-	}
+  if (deviceY - _startY > 0) {
+    if (deviceY - _startY > height / 2) {
+      _startY += deviceY - _startY - height / 2;
+    }
+    _lastY = deviceY;
+  } else {
+    if (abs(deviceY - _startY) > height / 2) {
+      _startY -= abs(deviceY - _startY) - height / 2;
+    }
+    _lastY = deviceY;
+  }
 }
 
 void EventManager::KeyEventDown(int key)
 {
-	_keyEvent[key].KeyBoardSignal = true;
+  _keyEvent[key].KeyBoardSignal = true;
 }
 
 void EventManager::KeyEventUp(int key) {
-	_keyEvent[key].KeyBoardSignal = false;
+  _keyEvent[key].KeyBoardSignal = false;
 }
 
-void EventManager::LeftButtonDown() {
-	_leftButton = true;
-}
-
-void EventManager::LeftButtonUp() {
-	_leftButton = false;
-}
-
-void EventManager::RightButtonDown() {
-	_rightButton = true;
-}
-
-void EventManager::RightButtonUp() {
-	_rightButton = false;
-}
+void EventManager::LeftButtonDown() { _leftButton = true; }
+void EventManager::LeftButtonUp() { _leftButton = false; }
+void EventManager::RightButtonDown() {_rightButton = true; }
+void EventManager::RightButtonUp() { _rightButton = false; }
 
 void EventManager::SetRelativeMouse(int _rx, int _ry) {
-	_relativemouseX += _rx;
-	_relativemouseY += _ry;
+  _relativemouseX += _rx;
+  _relativemouseY += _ry;
 }
 
 void EventManager::GetRelativeMouse(int &_rx, int &_ry) {
-	_rx = _relativemouseX;
-	_ry = _relativemouseY;
+  _rx = _relativemouseX;
+  _ry = _relativemouseY;
 }
 
 void EventManager::GetCurrentMousePosition(int &_x, int &_y) {
-	POINT p;
-	GetCursorPos(&p);
-	_x = p.x;
-	_y = p.y;
+  POINT p;
+  GetCursorPos(&p);
+  _x = p.x;
+  _y = p.y;
 }
 
 float EventManager::GetFlickDistance() const

@@ -8,6 +8,8 @@
 #include "CubismFramework.hpp"
 #include <Rendering/OpenGL/CubismOffscreenSurface_OpenGLES2.hpp>
 
+#include <memory>
+
 
 #define MAXVIEWDATA 1024
 
@@ -20,7 +22,7 @@
 class Model;
 class Sprite;
 class InfoReader;
-class EventManager;
+struct EventManager;
 
 enum SelectTarget
     {
@@ -33,40 +35,40 @@ enum SelectTarget
 * @brief 描画クラス
 */
 struct Mode {
-	Sprite *_back;       ///< 背景画像
-	Sprite *_catback; ///< 背景画像&猫
+  Sprite *_back;       ///< 背景画像
+  Sprite *_catback; ///< 背景画像&猫
 
-	bool _haseModel;
-	int _modelId;
+  bool _haseModel;
+  int _modelId;
 
-	bool _hasRightHandModel;
-	int _leftHandModelId;
+  bool _hasRightHandModel;
+  int _leftHandModelId;
 
-	Sprite *_rightHandUp; ///< 右爪
-	uint16_t _rightHandsCount;
-	Sprite *_rightHands[MAXKEYCOUNT];
+  Sprite *_rightHandUp; ///< 右爪
+  uint16_t _rightHandsCount;
+  Sprite *_rightHands[MAXKEYCOUNT];
 
-	bool _hasLeftHandModel;
-	int _rightHandModelId;
+  bool _hasLeftHandModel;
+  int _rightHandModelId;
 
-	Sprite *_leftHandUp; ///< 左爪
-	uint16_t _leftHandsCount;
-	Sprite *_leftHands[MAXKEYCOUNT];
+  Sprite *_leftHandUp; ///< 左爪
+  uint16_t _leftHandsCount;
+  Sprite *_leftHands[MAXKEYCOUNT];
 
-	uint16_t _keysCount;
-	Sprite *_keys[MAXKEYCOUNT];
+  uint16_t _keysCount;
+  Sprite *_keys[MAXKEYCOUNT];
 };
 
 struct ViewData {
-	Csm::CubismViewMatrix *_viewMatrix;
-	Csm::CubismMatrix44 *_deviceToScreen;
+  Csm::CubismViewMatrix *_viewMatrix;
+  Csm::CubismMatrix44 *_deviceToScreen;
 
-	int _modecount;
-	Mode _mode[MAXMODECOUNT];
+  int _modecount;
+  Mode _mode[MAXMODECOUNT];
 
-	int _curentface;
-	int _faceCount;
-	Sprite *_face[MAXFACECOUNT];
+  int _curentface;
+  int _faceCount;
+  Sprite *_face[MAXFACECOUNT];
 };
 
 
@@ -160,6 +162,6 @@ private:
     float _clearColor[4];           ///< レンダリングターゲットのクリアカラー
 
     SelectTarget target;
-    EventManager *eventManager;
-    InfoReader *_infoReader;
+    std::unique_ptr<EventManager> eventManager;
+    std::unique_ptr<InfoReader> _infoReader;
 };

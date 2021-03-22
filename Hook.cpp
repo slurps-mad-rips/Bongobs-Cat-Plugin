@@ -6,19 +6,22 @@
 #include"EventManager.hpp"
 
 #include <tchar.h>
-#include <string>
-#include <thread>
+
+#include <iostream>
 #include <sstream>
 #include <fstream>
-#include <iostream>
+
 #include <optional>
+#include <string>
+#include <thread>
+#include <array>
 
 #ifndef HID_USAGE_PAGE_GENERIC
-#define HID_USAGE_PAGE_GENERIC ((USHORT)0x01)
+static constexpr USHORT HID_USAGE_PAGE_GENERIC = 0x01;
 #endif
 
 #ifndef HID_USAGE_GENERIC_MOUSE
-#define HID_USAGE_GENERIC_MOUSE ((USHORT)0x02)
+static constexpr USHORT HID_USAGE_GENERIC_MOUSE = 0x02;
 #endif
 
 static HHOOK hhkLowLevelKybd;
@@ -219,14 +222,16 @@ void Hook::Run() {
   }
 
   //regist raw input device
-  RAWINPUTDEVICE Rid[1];
-  Rid[0].usUsagePage = HID_USAGE_PAGE_GENERIC;
-  Rid[0].usUsage = HID_USAGE_GENERIC_MOUSE;
-  Rid[0].dwFlags = RIDEV_INPUTSINK;
-  Rid[0].hwndTarget = m_hWnd;
-  if (RegisterRawInputDevices(Rid, 1, sizeof(Rid[0])) == FALSE) {
-    return;
-  };
+  std::array<RAWINPUTDEVICE, 1> Rid {{
+    {
+      .usUsagePage = HID_USAGE_PAGE_GENERIC,
+      .usUsage = HID_USAGE_GENERIC_MOUSE,
+      .dwFlags = RIDEV_INPUTSINK,
+      .hwndTarget = this->m_hWnd
+    }
+  }};
+  auto result = RegisterRawInputDevices(Rid.data(), static_cast<UINT>(Rid.size()), sizeof(RAWINPUTDEVICE));
+  if (result == FALSE) { return; }
 
   //message loop
   BOOL bRet;

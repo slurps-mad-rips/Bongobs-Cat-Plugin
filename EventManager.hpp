@@ -16,12 +16,10 @@ struct KeyEvent {
 };
 
 
-class EventManager
-{
-public:
+struct EventManager {
 
     EventManager();
-   ~EventManager();
+   ~EventManager() = default;
 
     float GetCenterX() const { return _lastX; }
     float GetCenterY() const { return _lastY; }
@@ -36,10 +34,10 @@ public:
     float GetY1() const{ return _lastY1; }
     float GetX2() const{ return _lastX2; }
     float GetY2() const{ return _lastY2; }
-    bool GetKeySignal(int i) { return _keyEvent[i].KeyBoardSignal; }
-    bool GetKeySignal2(int i) { return _keyEvent[i].KeyBoardSignal; }
-    bool GetRightButton() { return _rightButton; }
-    bool GetLeftButton() { return _leftButton; }
+    bool GetKeySignal(int i) const { return _keyEvent[i].KeyBoardSignal; }
+    bool GetKeySignal2(int i) const { return _keyEvent[i].KeyBoardSignal; }
+    bool GetRightButton() const { return _rightButton; }
+    bool GetLeftButton() const { return _leftButton; }
 
     /*
     * @brief タッチ開始時イベント
