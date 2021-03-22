@@ -1,33 +1,26 @@
 #pragma once
 #include <Windows.h>
-#include<thread>
+#include <thread>
 
 class Hook {
 public:
+  Hook() noexcept = default;
+  ~Hook() noexcept = default;
 
-
-
-	Hook();
-
-	~Hook();
-
-	void Strat();	
-
-	void Stop();
+  void Strat();
+  void Stop();
 
 private:
-	void Run();
+  void Run();
 
-	bool isExist;
+  bool isExist;
 
-	static LRESULT CALLBACK KeyboardHookProc(int nCode, WPARAM wParam, LPARAM lParam);
+  static LRESULT CALLBACK KeyboardHookProc(int, WPARAM wParam, LPARAM);
+  static LRESULT CALLBACK MouseHookProc(int, WPARAM wParam,  LPARAM);
+  static LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 
-	static LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam,  LPARAM lParam);
+  HWND m_hWnd;
 
-	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam,LPARAM lParam);
-
-	HWND m_hWnd;
-
-	std::thread *th;
+  std::thread *th;
 
 };

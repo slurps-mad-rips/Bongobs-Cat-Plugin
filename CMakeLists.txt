@@ -1,9 +1,9 @@
+cmake_minimum_required(VERSION 3.18)
+include(CMakePrintHelpers)
 # Set app name.
-set(APP_NAME bongobs-cat)
+project(bongobs-cat)
 
-# Set directory paths.
-set(SDK_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-set(CORE_PATH ${SDK_ROOT_PATH}/CubismSdk/Core)
+set(SDK_ROOT_PATH ${PROJECT_SOURCE_DIR})
 set(FRAMEWORK_PATH ${SDK_ROOT_PATH}/CubismSdk/Framework)
 set(THIRD_PARTY_PATH ${SDK_ROOT_PATH}/thirdParty)
 set(STB_PATH ${THIRD_PARTY_PATH}/stb)
@@ -11,18 +11,12 @@ set(GLEW_PATH ${THIRD_PARTY_PATH}/glew)
 set(GLFW_PATH ${THIRD_PARTY_PATH}/glfw)
 set(RES_PATH ${SDK_ROOT_PATH}/Resources)
 
-project(${APP_NAME})
-
+set(CORE_PATH ${SDK_ROOT_PATH}/CubismSdk/Core)
 # Detect architecture.
-if(CMAKE_EXE_LINKER_FLAGS STREQUAL "/machine:x64 /OPT:REF")
-  set(ARCH x86_64)
-elseif(CMAKE_EXE_LINKER_FLAGS STREQUAL "/machine:x86 /OPT:REF")
-  set(ARCH x86)
-else()
-  message(FATAL_ERROR "[${APP_NAME}] Invalid linker flag ${CMAKE_EXE_LINKER_FLAGS}.")
-endif()
-
+set(COMPILER ${MSVC_TOOLSET_VERSION})
+set(ARCH x86_64)
 # Detect compiler.
+
 if(MSVC_VERSION MATCHES 1800)
   # Visual Studio 2013
   set(COMPILER 120)
@@ -36,9 +30,9 @@ elseif(MSVC_VERSION GREATER_EQUAL 1920 AND MSVC_VERSION LESS 1930)
   # Visual Studio 2019
   set(COMPILER 142)
 elseif(MSVC)
-  message(FATAL_ERROR "[${APP_NAME}] Unsupported Visual C++ compiler used.")
+  message(FATAL_ERROR "[${PROJECT_NAME}] Unsupported Visual C++ compiler used.")
 else()
-  message(FATAL_ERROR "[${APP_NAME}] Unsupported compiler used.")
+  message(FATAL_ERROR "[${PROJECT_NAME}] Unsupported compiler used.")
 endif()
 # Detect core crt.
 if(CORE_CRL_MD)
@@ -49,10 +43,12 @@ endif()
 
 # Add Cubism Core.
 # Import as static library.
-add_library(Live2DCubismCore STATIC IMPORTED)
+add_library(Live2D::Cubism::Core STATIC IMPORTED)
+target_include_directories(Live2D::Cubism::Core
+  INTERFACE $<BUILD_INTERFACE:${CORE_PATH}/include>)
 # Find library path.
 set(CORE_LIB_SUFFIX ${CORE_PATH}/lib/windows/${ARCH}/${COMPILER})
-set_target_properties(Live2DCubismCore
+set_target_properties(Live2D::Cubism::Core
   PROPERTIES
     IMPORTED_LOCATION_DEBUG
       ${CORE_LIB_SUFFIX}/Live2DCubismCore_${CRT}d.lib
@@ -62,14 +58,13 @@ set_target_properties(Live2DCubismCore
       ${CORE_LIB_SUFFIX}/Live2DCubismCore_${CRT}.lib
     IMPORTED_LOCATION_MINSIZEREL
       ${CORE_LIB_SUFFIX}/Live2DCubismCore_${CRT}.lib
-    INTERFACE_INCLUDE_DIRECTORIES ${CORE_PATH}/include
 )
 
 # Add GLEW ,GLFW.
-add_subdirectory(${GLEW_PATH}/build/cmake ${CMAKE_CURRENT_SOURCE_DIR}/gl/glew)
-add_subdirectory(${GLFW_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/gl/glfw)
-set_target_properties(glew PROPERTIES FOLDER "plugins/${APP_NAME}")
-set_target_properties(glew_s PROPERTIES FOLDER "plugins/${APP_NAME}")
+add_subdirectory(${GLEW_PATH}/build/cmake)
+add_subdirectory(${GLFW_PATH})
+set_target_properties(glew PROPERTIES FOLDER "plugins/${PROJECT_NAME}")
+set_target_properties(glew_s PROPERTIES FOLDER "plugins/${PROJECT_NAME}")
 
 # Specify Cubism Framework rendering.
 set(FRAMEWORK_SOURCE OpenGL)
@@ -80,59 +75,19 @@ target_compile_definitions(Framework PUBLIC CSM_TARGET_WIN_GL)
 # Add include path of GLEW to framework.
 target_include_directories(Framework PUBLIC ${GLEW_PATH}/include)
 # Link libraries to framework.
-target_link_libraries(Framework Live2DCubismCore glew_s)
+target_link_libraries(Framework PUBLIC Live2D::Cubism::Core glew_s)
 
-set_target_properties(Framework PROPERTIES FOLDER "plugins/${APP_NAME}")
+set_target_properties(Framework PROPERTIES FOLDER "plugins/${PROJECT_NAME}")
 # Find opengl libraries.
 find_package(OpenGL REQUIRED)
 
-set(${APP_NAME}_SOURCES
-	vtuber_plugin.cpp
- 	VtuberPlugin.cpp
-	VtuberFrameWork.cpp  
-	VtuberDelegate.cpp
-	View.cpp	
-	Live2DManager.cpp
-	Model.cpp	
-	Pal.cpp	
-	LAppTextureManager.cpp			    
-	LAppAllocator.cpp
-        Sprite.cpp
-        Hook.cpp
-	EventManager.cpp
-	Define.cpp
-	json.cpp
-	InfoReader.cpp
-	)
+file(GLOB sources CONFIGURE_DEPENDS ${PROJECT_SOURCE_DIR}/*.cpp)
 
-set(${APP_NAME}_HEADERS	
-	LAppAllocator.hpp
-	Define.hpp
-	VtuberDelegate.hpp
-	Live2DManager.hpp
-	LAppTextureManager.hpp
-	Model.hpp
-	Pal.hpp
-	View.hpp
-	VtuberFrameWork.hpp
-	VtuberPlugin.hpp
-        Sprite.hpp
-        Hook.hpp
-        EventManager.hpp
-	InfoReader.hpp
-	json.h
-	json-forwards.h
-)
-
-#find_package(Thread REQUIRED)
-
-add_library(${APP_NAME} MODULE
-	${${APP_NAME}_SOURCES}
-	${${APP_NAME}_HEADERS}    	
-)
+add_library(${PROJECT_NAME} MODULE ${sources})
 
 # Link libraries to app.
-target_link_libraries(${APP_NAME}
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
  	libobs
 	${LIBFDK_LIBRARIES}
 	Framework
@@ -141,9 +96,7 @@ target_link_libraries(${APP_NAME}
 )
 
 # Specify include directories.
-target_include_directories(${APP_NAME} PRIVATE ${STB_PATH})
+target_include_directories(${PROJECT_NAME} PRIVATE ${STB_PATH})
 
-set_target_properties(${APP_NAME} PROPERTIES FOLDER "plugins/${APP_NAME}")
-
-install_obs_plugin_with_data(${APP_NAME} data)
-
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "plugins/${PROJECT_NAME}")
+install_obs_plugin_with_data(${PROJECT_NAME} data)
